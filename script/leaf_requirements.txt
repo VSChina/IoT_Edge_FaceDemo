@@ -1,0 +1,15 @@
+azure-common==1.1.14
+six==1.11.0
+azure-iothub-device-client==1.4.1
+azure-eventhub==0.2.0rc1
+dlib==19.15.0
+iotedgehubdev==0.3.0
+numpy==1.15.0
+opencv-python==3.4.2.17
+pydocumentdb==2.3.2
+Pillow==5.2.0
+requests==2.19.1
+scikit-image==0.14.0
+scipy==1.1.0
+uamqp==0.1.1
+pyOpenSSL==17.5.0

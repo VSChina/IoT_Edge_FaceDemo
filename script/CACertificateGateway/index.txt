@@ -1,0 +1,2 @@
+V	181029060325Z		01	unknown	/CN=Azure IoT Hub Intermediate Cert Test Only
+V	181029060325Z		02	unknown	/CN=demo.ca

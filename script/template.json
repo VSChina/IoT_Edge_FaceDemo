@@ -1,0 +1,290 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "databaseAccounts_autosql_name": {
+            "defaultValue": null,
+            "type": "SecureString"
+        },
+        "sites_autorecog_name": {
+            "defaultValue": "autorecog",
+            "type": "String"
+        },
+        "IotHubs_autoiot_name": {
+            "defaultValue": "autoiot",
+            "type": "String"
+        },
+        "components_autorecog_name": {
+            "defaultValue": "autorecog",
+            "type": "String"
+        },
+        "serverfarms_CentralUSPlan_name": {
+            "defaultValue": "CentralUSPlan",
+            "type": "String"
+        },
+        "namespaces_autoresult_name": {
+            "defaultValue": "autoresult",
+            "type": "String"
+        },
+        "config_web_name": {
+            "defaultValue": "web",
+            "type": "String"
+        },
+        "storageAccounts_autorecogstore_name": {
+            "defaultValue": "autorecogstore",
+            "type": "String"
+        },
+        "hostNameBindings_autorecog.azurewebsites.net_name": {
+            "defaultValue": "autorecog.azurewebsites.net",
+            "type": "String"
+        },
+        "AuthorizationRules_RootManageSharedAccessKey_name": {
+            "defaultValue": "RootManageSharedAccessKey",
+            "type": "String"
+        },
+        "registries_autoimagestore_name": {
+            "defaultValue": "autoimagestore",
+            "type": "String"
+        },
+        "eventhub_autoresult_name": {
+            "defaultValue": "faceresult0917",
+            "type": "String"
+        },
+        "leaf_device_name": {
+            "defaultValue": "videoUpload",
+            "type": "String"
+        },
+        "edge_device_name": {
+            "defaultValue": "aiSolution",
+            "type": "String"
+        },
+        "edge_embedded_name": {
+            "defaultValue": "featUpload",
+            "type": "String"
+        },
+        "sql_database_name": {
+            "defaultValue": "sample_data",
+            "type": "String"
+        },
+        "sql_collection_name": {
+            "defaultValue": "collection_1",
+            "type": "String"
+        },
+        "web_plan_name": {
+            "defaultValue": "autowebplandemo",
+            "type": "String"
+        },
+        "web_app_name": {
+            "defaultValue": "autoregisterdemo",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "comments": "Generalized from resource: '/subscriptions/faab228d-df7a-4086-991e-e81c4659d41a/resourceGroups/20180917test/providers/Microsoft.ContainerRegistry/registries/autoimagestore'.",
+            "type": "Microsoft.ContainerRegistry/registries",
+            "sku": {
+                "name": "Standard",
+                "tier": "Standard"
+            },
+            "name": "[parameters('registries_autoimagestore_name')]",
+            "apiVersion": "2017-10-01",
+            "location": "westus",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "adminUserEnabled": false
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/faab228d-df7a-4086-991e-e81c4659d41a/resourceGroups/20180913test/providers/Microsoft.Devices/IotHubs/autoiot'.",
+            "type": "Microsoft.Devices/IotHubs",
+            "sku": {
+                "name": "S1",
+                "tier": "Standard",
+                "capacity": 1
+            },
+            "name": "[parameters('IotHubs_autoiot_name')]",
+            "apiVersion": "2018-04-01",
+            "location": "westus",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "operationsMonitoringProperties": {
+                    "events": {
+                        "None": "None",
+                        "Connections": "None",
+                        "DeviceTelemetry": "None",
+                        "C2DCommands": "None",
+                        "DeviceIdentityOperations": "None",
+                        "FileUploadOperations": "None",
+                        "Routes": "None"
+                    }
+                },
+                "ipFilterRules": [],
+                "eventHubEndpoints": {
+                    "events": {
+                        "retentionTimeInDays": 1,
+                        "partitionCount": 2,
+                        "partitionIds": [
+                            "0",
+                            "1"
+                        ],
+                        "path": "[parameters('IotHubs_autoiot_name')]",
+                        "endpoint": "[concat('sb://iothub-ns-', parameters('IotHubs_autoiot_name'),'-766000-d922ef706b.servicebus.windows.net/')]"
+                    },
+                    "operationsMonitoringEvents": {
+                        "retentionTimeInDays": 1,
+                        "partitionCount": 2,
+                        "partitionIds": [
+                            "0",
+                            "1"
+                        ],
+                        "path": "[concat(parameters('IotHubs_autoiot_name'),'-operationmonitoring')]",
+                        "endpoint": "[concat('sb://iothub-ns-', parameters('IotHubs_autoiot_name'),'-766000-d922ef706b.servicebus.windows.net/')]"
+                    }
+                },
+                "routing": {
+                    "endpoints": {
+                        "serviceBusQueues": [],
+                        "serviceBusTopics": [],
+                        "eventHubs": [],
+                        "storageContainers": []
+                    },
+                    "routes": [],
+                    "fallbackRoute": {
+                        "name": "$fallback",
+                        "source": "DeviceMessages",
+                        "condition": "true",
+                        "endpointNames": [
+                            "events"
+                        ],
+                        "isEnabled": true
+                    }
+                },
+                "storageEndpoints": {
+                    "$default": {
+                        "sasTtlAsIso8601": "PT1H",
+                        "connectionString": "",
+                        "containerName": ""
+                    }
+                },
+                "messagingEndpoints": {
+                    "fileNotifications": {
+                        "lockDurationAsIso8601": "PT1M",
+                        "ttlAsIso8601": "PT1H",
+                        "maxDeliveryCount": 10
+                    }
+                },
+                "enableFileUploadNotifications": false,
+                "cloudToDevice": {
+                    "maxDeliveryCount": 10,
+                    "defaultTtlAsIso8601": "PT1H",
+                    "feedback": {
+                        "lockDurationAsIso8601": "PT1M",
+                        "ttlAsIso8601": "PT1H",
+                        "maxDeliveryCount": 10
+                    }
+                },
+                "features": "None"
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/faab228d-df7a-4086-991e-e81c4659d41a/resourceGroups/20180917test/providers/Microsoft.DocumentDB/databaseAccounts/autosql'.",
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "kind": "GlobalDocumentDB",
+            "name": "[parameters('databaseAccounts_autosql_name')]",
+            "apiVersion": "2015-04-08",
+            "location": "West US",
+            "tags": {
+                "defaultExperience": "DocumentDB"
+            },
+            "scale": null,
+            "properties": {
+                "databaseAccountOfferType": "Standard",
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "Session",
+                    "maxIntervalInSeconds": 5,
+                    "maxStalenessPrefix": 100
+                },
+                "name": "[parameters('databaseAccounts_autosql_name')]"
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/faab228d-df7a-4086-991e-e81c4659d41a/resourceGroups/20180913test/providers/Microsoft.EventHub/namespaces/autoresult'.",
+            "type": "Microsoft.EventHub/namespaces",
+            "sku": {
+                "name": "Basic",
+                "tier": "Basic",
+                "capacity": 1
+            },
+            "name": "[parameters('namespaces_autoresult_name')]",
+            "apiVersion": "2017-04-01",
+            "location": "West US",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "isAutoInflateEnabled": false,
+                "maximumThroughputUnits": 0
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/faab228d-df7a-4086-991e-e81c4659d41a/resourceGroups/20180913test/providers/Microsoft.Storage/storageAccounts/autorecogstore'.",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_autorecogstore_name')]",
+            "apiVersion": "2018-03-01-preview",
+            "location": "centralus",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": false,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "enabled": true
+                        },
+                        "blob": {
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/faab228d-df7a-4086-991e-e81c4659d41a/resourcegroups/20180913test/providers/Microsoft.EventHub/namespaces/autoresult/AuthorizationRules/RootManageSharedAccessKey'.",
+            "type": "Microsoft.EventHub/namespaces/AuthorizationRules",
+            "name": "[concat(parameters('namespaces_autoresult_name'), '/', parameters('AuthorizationRules_RootManageSharedAccessKey_name'))]",
+            "apiVersion": "2017-04-01",
+            "location": "West US",
+            "scale": null,
+            "properties": {
+                "rights": [
+                    "Listen",
+                    "Manage",
+                    "Send"
+                ]
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_autoresult_name'))]"
+            ]
+        }
+    ]
+}

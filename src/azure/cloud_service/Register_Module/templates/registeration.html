@@ -1,0 +1,365 @@
+<!DOCTYPE html>  
+<head>  
+    <title>Registeration Demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <style>
+        .center_right
+        {
+            margin: auto;
+        }
+        #video_stream
+        {
+            border-style:groove;
+            border-color:rgb(42, 138, 202);
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        #register_name
+        {
+            border-style: none none solid none;
+            border-width: 2px;
+            border-color: rgb(42, 138, 202);
+        }
+        .button
+        {
+            background-color: rgb(42, 138, 202);
+            border: none;
+            color: white;
+            padding: 5px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        .button:after {
+            content: "";
+            background: rgb(176, 247, 182);
+            display: block;
+            position: absolute;
+            padding-top: 300%;
+            padding-left: 350%;
+            margin-left: -20px!important;
+            margin-top: -120%;
+            opacity: 0;
+            transition: all 0.8s
+        }
+
+        .button:active:after {
+            padding: 0;
+            margin: 0;
+            opacity: 1;
+            transition: 0s
+        }
+
+        .button1:hover {
+            box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+        }
+        .info
+        {
+            color: rgb(42, 138, 202);
+        }
+
+        .unselected
+        {
+            border-style: none;
+            margin: 40px;
+        }
+
+        .selected
+        {
+            border-style: groove;
+            border-color: red;
+            margin: 40px;
+        }
+
+
+    </style>
+</head>  
+<body>
+    <div id = "wrapper">
+        <div style="position: relative;float: left;" id = "video_part">
+            <div style="text-align: center;">
+                <h2 class="info" id="video_info">Video Stream</h2>
+            </div>
+            <div style="position: absolute;">
+                    <canvas style="visibility: hidden;"id="canvas_gallery" height="480px" width="640px"></canvas>
+            </div>
+            <div>
+                <video id="video_stream" height="480px" width="640px" autoplay="autoplay"></video>
+            </div>
+            
+        </div>
+
+        <div class  = "center_right">
+            <div style="text-align: center;">
+                <h2 class="info" id="register_info">Click the Start</h2>
+            </div>
+            <div style="text-align: center;" id = "register_candidates">
+
+            </div>
+            
+        </div>
+    </div>
+
+    <div style="position: absolute;bottom: 5%; width: 100%;">
+        <div style="position: relative;float: left; width:640px;">
+            <div style="text-align: center;">
+                <input class="button" id="start_or_capture" type="button" title="Start" value="Start" onclick="getMedia();" />
+            </div>
+        </div>
+        <div class = "center_right">
+            <div style="text-align: center;" id = "input_part">
+                <input id = "register_name" type="text" placeholder="Enter the Name"/>
+                <input class="button" id = "register_button" type="button" title="Register" value="Register" onclick="register_one();" />
+                </div>
+        </div>
+    </div>
+
+
+    <script src="static/js/jquery-3.3.1.js"></script>
+    <script type="text/javascript">  
+        var video = document.querySelector('video');  
+        var audio, audioType;  
+  
+        var canvas_gallery = document.getElementById("canvas_gallery")
+        var context_gallery = canvas_gallery.getContext('2d');
+
+        var register_candidates = document.getElementById('register_candidates');
+        var guide_info = document.getElementById('register_info');
+        register_status = -2;
+  
+        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;  
+        window.URL = window.URL || window.webkitURL || window.mozURL || window.msURL;  
+  
+        var exArray = []; //存储设备源ID  
+        // MediaStreamTrack.getSources(function (sourceInfos) {  
+        //     for (var i = 0; i != sourceInfos.length; ++i) {  
+        //         var sourceInfo = sourceInfos[i];  
+        //         //这里会遍历audio,video，所以要加以区分  
+        //         if (sourceInfo.kind === 'video') {  
+        //             exArray.push(sourceInfo.id);  
+        //         }  
+        //     }  
+        // });  
+        function getMedia() {  
+            if (navigator.getUserMedia) {  
+                navigator.getUserMedia({  
+                    'video': {  
+                        'optional': [{  
+                            'sourceId': exArray[1] //0为前置摄像头，1为后置  
+                        }]  
+                    },  
+                    'audio':false  
+                }, successFunc, errorFunc);    //success是获取成功的回调函数  
+            }  
+            else {  
+                alert('Native device media streaming (getUserMedia) not supported in this browser.');  
+            }  
+        }
+
+        function adjust_info(info)
+        {
+            guide_info.innerHTML=info;
+        }
+        function successFunc(stream) {    
+            if (video.mozSrcObject !== undefined) {  
+                //Firefox中，video.mozSrcObject最初为null，而不是未定义的，我们可以靠这个来检测Firefox的支持  
+                video.mozSrcObject = stream;  
+            }  
+            else {  
+                video.srcObject = stream;
+            }
+
+            var start_button = document.getElementById("start_or_capture");
+            if(start_button.title!="Capture")
+            {
+                start_button.title = "Capture";
+                start_button.value = "Capture";
+                $("#start_or_capture").unbind('click'); 
+                $("#start_or_capture").click(function(){
+                    getPhoto();
+                });
+                adjust_info("Click the Capture");
+                register_status = -1;
+            }
+        } 
+
+        function errorFunc(e) {  
+            alert('Error！'+e);  
+        }  
+
+        //拍照  
+        function getPhoto() {
+            context_gallery.drawImage(video, 0, 0); //将video对象内指定的区域捕捉绘制到画布上指定的区域，实现拍照。  
+            doPost("/detection",canvas_gallery,context_gallery);
+        } 
+
+        function doPost(url,canvas,context)
+        {
+            refresh()
+            var formdata = new FormData();
+            formdata.append('raw_image', canvas.toDataURL()); 
+            formdata.append("frame_index", 1); //fileName为自定义，名字随机生成或者写死，看需求
+            formdata.append("type", "registeration"); //fileName为自定义，名字随机生成或者写死，看需求
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("POST", url); //注意跨域问题
+            xmlHttp.send(formdata);
+            adjust_info("Under detection process ...");
+            xmlHttp.onreadystatechange = function() {
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {　　　　　
+                    generateCandidates(xmlHttp.responseText,context,canvas);
+                } else {　　　　　　
+                    console.log(xmlHttp.statusText);　　　　
+                }
+            };
+        }
+
+        function drawRect(json_str,context)
+        {
+            var json_obj;
+            json_obj=JSON.parse(json_str);
+
+            dets_list = json_obj['dets'];
+            console.log(dets_list);
+            context.strokeStyle = "#ff0000";
+            for(var i = 0; i<dets_list.length;i++)
+            {
+                var cordinates = dets_list[i].split(" ");
+                var x = parseInt(cordinates[0]), y = parseInt(cordinates[1]);
+                var width = parseInt(cordinates[2]) - x;
+                var height = parseInt(cordinates[3]) - y;
+                context.strokeRect(x,y,width,height);
+            }
+        }
+
+        function generateCandidates(json_str,context,canvas)
+        {
+            var json_obj;
+            json_obj=JSON.parse(json_str);
+            var face_margin = 50;
+            
+            dets_list = json_obj['dets'];
+            dets_num = json_obj['num'];
+            align_list = json_obj['align_imgs'];
+            console.log(dets_list);
+            console.log(align_list);
+            register_candidates.innerHTML="";
+            var expand_size = 50;
+            candidates_canvas_list = new Array();
+            
+            for(var i = 0; i<dets_list.length;i++)
+            {
+                var cordinates = dets_list[i].split(" ");
+                var x = parseInt(cordinates[0])-expand_size, y = parseInt(cordinates[1])-expand_size;
+                var width = parseInt(cordinates[2]) + expand_size - x;
+                var height = parseInt(cordinates[3]) + expand_size - y;
+
+                var clip_canvas = document.createElement("canvas")
+                clip_canvas.className="unselected"
+                clip_canvas.id = i.toString();
+                clip_canvas.height = 112;
+                clip_canvas.width = 112;
+                var clip_context = clip_canvas.getContext('2d')
+                clip_context.drawImage(canvas, x, y, width, height, 0, 0, 112, 112);
+                register_candidates.appendChild(clip_canvas);
+                candidates_canvas_list[i] = clip_canvas;
+                clip_canvas.addEventListener('click',function(e)
+                {
+                    bbox = dets_list[parseInt(this.id)];
+                    img_base64 = align_list[parseInt(this.id)];
+                    for(var i=0;i<align_list.length;++i)
+                    {
+                        document.getElementById(i).className = "unselected";
+                    }
+                    candidates_canvas_list[parseInt(this.id)].className = "selected";
+                    adjust_info("Enter the name and click the Register");
+                    register_status = 1
+                });
+                if(i%2!=0)
+                {
+                    var br = document.createElement("br");
+                    register_candidates.appendChild(br);
+                }
+            }
+
+            if(dets_list.length>0)
+            {
+                register_status = 0;
+                adjust_info("Select one face image");
+            }
+            else
+            {
+                adjust_info("Capture again");
+            }
+        }
+
+        function refresh()
+        {
+            register_status = -1;
+            register_candidates.innerHTML="";
+            document.getElementById("register_name").value = "";
+        }
+
+        function register_one()
+        {
+
+            console.log(register_status);
+
+            if(register_status == -2)
+            {
+                adjust_info("Click the Start");
+                return;
+            }
+
+            if(register_status == -1)
+            {
+                adjust_info("Click the Capture");
+                return;
+            }
+
+            if(register_status == 0)
+            {
+                adjust_info("Select one face image");
+                return;
+            }
+            var register_name = document.getElementById("register_name").value;
+            console.log(register_name);
+            if(register_status == 1 && register_name.length !=0)
+                register_status = 2;
+            else
+            {
+                adjust_info("Enter the name and click the Register");
+                return;
+            }
+            
+            
+            console.log(bbox);
+            console.log(img_base64);
+
+            var formdata = new FormData();
+            formdata.append('det', bbox); 
+            formdata.append("frame_index", 1); //fileName为自定义，名字随机生成或者写死，看需求
+            formdata.append("name", register_name); //fileName为自定义，名字随机生成或者写死，看需求
+            formdata.append('img',img_base64)
+            var xmlHttp = new XMLHttpRequest();
+            var register_url = "/registeration";
+            xmlHttp.open("POST", register_url,true); //注意跨域问题
+            xmlHttp.send(formdata);
+            adjust_info("Under registration process ...");
+            xmlHttp.onreadystatechange = function() {
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {　　　　　　
+                    console.log(xmlHttp.responseText);
+                    adjust_info("Registration success");
+                    refresh()
+                } else {　　　　　　
+                    console.log(xmlHttp.statusText);　　　　
+                }
+            };
+        }
+    </script>  
+</body>  

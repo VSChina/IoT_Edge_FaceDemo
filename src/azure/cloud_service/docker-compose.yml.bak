@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  business:
+    image: autoimagestore.azurecr.io/cloud_business
+    command: http://172.20.0.7 http://172.20.0.8
+    depends_on:
+      - detection
+      - feature
+    ports:
+      - "80:80"
+    environment:
+      detecion_ip: detection
+      feature_ip: feature
+  detection:
+    image: autoimagestore.azurecr.io/detection_service
+    expose:
+      - "80"
+  
+  feature:
+    image: autoimagestore.azurecr.io/recognition_service:cpu
+    expose:
+      - "80"
+  

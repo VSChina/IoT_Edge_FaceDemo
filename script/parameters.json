@@ -1,0 +1,63 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "databaseAccounts_autosql_name": {
+            "value": "autosqldemo"
+        },
+        "sites_autorecog_name": {
+            "value": "autorecogdemo"
+        },
+        "IotHubs_autoiot_name": {
+            "value": "autoiotdemo"
+        },
+        "components_autorecog_name": {
+            "value": "autorecogdemo"
+        },
+        "serverfarms_CentralUSPlan_name": {
+            "value": "autocentralusplandemo"
+        },
+        "namespaces_autoresult_name": {
+            "value": "autoresultdemo"
+        },
+        "config_web_name": {
+            "value": "autowebdemo"
+        },
+        "storageAccounts_autorecogstore_name": {
+            "value": "autorecogstoredemo"
+        },
+        "hostNameBindings_autorecog.azurewebsites.net_name": {
+            "value": "autorecogdemo"
+        },
+        "AuthorizationRules_RootManageSharedAccessKey_name": {
+            "value": "autoinstalldemo"
+        },
+        "eventhub_autoresult_name": {
+            "value": "faceresultdemo"
+        },
+        "leaf_device_name": {
+            "value": "videoUpload"
+        },
+        "edge_device_name": {
+            "value": "aiSolution"
+        },
+        "edge_embedded_name": {
+            "value": "featUpload"
+        },
+        "sql_database_name": {
+            "value": "sample_data"
+        },
+        "sql_collection_name": {
+            "value": "collection_1"
+        },
+        "registries_autoimagestore_name": {
+            "value": "autoimagestore"
+        },
+        "web_plan_name": {
+            "value": "autowebplandemo"
+        },
+        "web_app_name": {
+            "value": "autoregisterdemo"
+        }
+    }
+}
